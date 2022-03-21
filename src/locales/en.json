@@ -1,0 +1,14 @@
+{
+  "monday": "Monday",
+  "tuesday": "Tuesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "saturday": "Saturday",
+  "sunday": "Sunday",
+  "precipitation": "precipitation",
+  "humidity": "humidity",
+  "wind": "wind",
+  "speed": "km/h",
+  "changeLocation": "Change location"
+}

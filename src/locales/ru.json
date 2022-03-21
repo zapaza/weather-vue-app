@@ -1,0 +1,14 @@
+{
+  "monday": "Понедельник",
+  "tuesday": "Вторник",
+  "wednesday": "Среда",
+  "thursday": "Четверг",
+  "friday": "Пятница",
+  "saturday": "Суббота",
+  "sunday": "Воскресенье",
+  "precipitation": "осадки",
+  "humidity": "влажность",
+  "wind": "ветер",
+  "speed": "км/ч",
+  "changeLocation": "Изменить локацию"
+}
