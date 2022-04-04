@@ -1,12 +1,11 @@
 import { ActionContext, createStore } from 'vuex';
 import { ICurrentWeatherData } from '@/code/types/currentWeatherData';
 import { HTTPRequest } from '@/code/request/request';
-import { geolocation } from '@/code/helpers/geolocation';
 
 interface IState {
   currentWeatherData: ICurrentWeatherData | Record<string, string>;
-  lon: number | null;
-  lat: number | null;
+  latitude: null | number;
+  longitude: null | number;
   city: string;
   country: string;
 }
@@ -14,8 +13,8 @@ interface IState {
 export default createStore<IState>({
   state: {
     currentWeatherData: {},
-    lon: null,
-    lat: null,
+    latitude: null,
+    longitude: null,
     city: '',
     country: '',
   },
@@ -24,27 +23,8 @@ export default createStore<IState>({
       const data = await HTTPRequest.get<ICurrentWeatherData>(url);
 
       ctx.commit('updateCurrentWeatherData', data);
+      ctx.commit('updateLocationNames', data);
     },
-
-    getLocation(ctx: ActionContext<IState, IState>) {
-      const { lon, lat } = geolocation.currentLocation().geolocation;
-
-      console.log(lon, lat);
-
-      ctx.commit('updateLon', lon);
-      ctx.commit('updateLat', lat);
-    },
-
-    async getLocationsNames(ctx: ActionContext<IState, IState>, url: string) {
-      const data = await HTTPRequest.get<ICurrentWeatherData>(url);
-
-      const currentCity = data.name;
-      const currentCountry = data.sys.country;
-
-      ctx.commit('updateCity', currentCity);
-      ctx.commit('updateCountry', currentCountry);
-    },
-
   },
   mutations: {
     updateCurrentWeatherData(state: IState, weatherData: ICurrentWeatherData) {
@@ -52,38 +32,30 @@ export default createStore<IState>({
     },
 
     updateLon(state: IState, lon: number) {
-      state.lon = lon;
+      state.longitude = lon;
     },
 
     updateLat(state: IState, lat: number) {
-      state.lat = lat;
+      state.latitude = lat;
     },
-
-    updateCity(state: IState, city: string) {
-      state.city = city;
-    },
-
-    updateCountry(state: IState, country: string) {
-      state.country = country;
+    updateLocationNames(state: IState, locationData: ICurrentWeatherData) {
+      state.city = locationData.name;
+      state.country = locationData.sys.country;
     },
   },
   getters: {
     showCurrentWeatherData(state: IState) {
       return state.currentWeatherData;
     },
-
-    showLon(state: IState) {
-      return state.lon;
+    showLongitude(state: IState) {
+      return state.longitude;
     },
-
-    showLat(state: IState) {
-      return state.lat;
+    showLatitude(state: IState) {
+      return state.latitude;
     },
-
     showCity(state: IState) {
       return state.city;
     },
-
     showCountry(state: IState) {
       return state.country;
     },

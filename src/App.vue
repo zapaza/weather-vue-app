@@ -3,7 +3,7 @@
     <div class="container">
       <div class="weather-side">
         <div class="weather-gradient"></div>
-        <CDateContainer/>
+        <CDateContainer :city-name="city" :country-name="country"/>
         <CWeatherContainer/>
       </div>
       <div class="info-side">
@@ -25,7 +25,7 @@
 import {
   computed,
   defineComponent,
-  onMounted,
+  onMounted, watch,
 } from 'vue';
 import CDateContainer from '@/components/CDateContainer.vue';
 import CWeatherContainer from '@/components/CWeatherContainer.vue';
@@ -48,20 +48,44 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const urlCurrentWeatherData = `${ENDPOINT.currentWeatherData}?lat=35&lon=139&appid=2f01b940bd0602117d74d88616da877d`;
     const weatherData = computed<ICurrentWeatherData>(() => store.getters.showCurrentWeatherData);
 
-    const getWeatherData = (url: string) => {
+    function getLocation() {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          store.commit('updateLon', position.coords.longitude);
+          store.commit('updateLat', position.coords.latitude);
+        },
+      );
+    }
+
+    const lon = computed(() => store.getters.showLongitude);
+    const lat = computed(() => store.getters.showLatitude);
+
+    function getCurrentWeatherData(url: string) {
       store.dispatch('getCurrentWeatherData', url);
-    };
+    }
+
+    const city = computed(() => store.getters.showCity);
+    const country = computed(() => store.getters.showCountry);
+
+    watch(
+      () => [store.getters.showLongitude, store.getters.showLatitude],
+      () => {
+        const requestUrl = computed<string>(() => `${ENDPOINT.currentWeatherData}?lat=${lat.value}&lon=${lon.value}&appid=2f01b940bd0602117d74d88616da877d&units=metric&lang=ru}`);
+        getCurrentWeatherData(requestUrl.value);
+      },
+    );
 
     onMounted(() => {
+      getLocation();
       feather.replace();
-      getWeatherData(urlCurrentWeatherData);
     });
 
     return {
       weatherData,
+      city,
+      country,
     };
   },
 });

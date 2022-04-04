@@ -6,7 +6,7 @@ interface IEndpoint {
 }
 
 export const ENDPOINT: IEndpoint = {
-  geocoding: 'https://api.openweathermap.org/geo/1.0/direct',
+  geocoding: 'http://api.openweathermap.org/geo/1.0/reverse',
   currentWeatherData: 'https://api.openweathermap.org/data/2.5/weather',
 };
 
